@@ -2,11 +2,7 @@ import java.io.File
 import java.lang.RuntimeException
 
 class RoundTwo {
-    val eligble = listOf("one", "two", "three", "four", "five", "six", "seven", "eight" )
-
-
-
-    fun findFirstDigit(input:String):Char {
+    fun findFirstDigit(input:String, eligble:List<String>):Char {
         println("Looking at $input")
         if(input.isEmpty()) {
             throw RuntimeException("Came to the end without finding anything relevant")
@@ -17,7 +13,7 @@ class RoundTwo {
             println("SingleDigit not found. Evaluating against StringDigits")
             return evaluateStringDigits(input, eligble).digitToChar()
         } catch (notFound:NoSuchElementException) {
-            return findFirstDigit(input.substring(1))
+            return findFirstDigit(input.substring(1), eligble)
         }
     }
 
@@ -43,21 +39,5 @@ class RoundTwo {
             return verifyAgainst == input.subSequence(0, verifyAgainst.length)
     }
 
-
-}
-
-fun main(args: Array<String>) {
-    val result = File("input2.txt").readLines().map {
-    //val result = File("input1.txt").readLines().map {
-        val firstDigit = RoundTwo().findFirstDigit(it)
-        println("RESULT 1 was $firstDigit")
-        val secondDigit = RoundTwo().findFirstDigit(it.reversed())
-        println("RESULT REVERSED WAS $secondDigit")
-
-        println("Combined: $firstDigit$secondDigit")
-        "$firstDigit$secondDigit".toInt()
-    }.sum()
-
-    println("Let there be snow: ${result}")
 
 }
