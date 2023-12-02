@@ -14,7 +14,7 @@ class Day2(val games: List<String>, val lookup: Map<String, Int>) {
         }
     }
 
-    fun puzzle2(): Int = games.sumOf { evaluateHand2(parseGame(it, false, lookup)) }
+    fun puzzle2(): Int = games.sumOf { evalKubeSquared(parseGame(it, false, lookup).flatMap { it }) }
 
     private fun parseGame(game: String, exitOnErrors: Boolean, lookup: Map<String, Int>): List<List<Pair<String, Int>>> =
         game.split(":")[1] //Remove Game ID
@@ -25,22 +25,17 @@ class Day2(val games: List<String>, val lookup: Map<String, Int>) {
                     val colour = draw[1]
                     //Verify by the rules
                     if (exitOnErrors && value > lookup.get(colour)!!) {
-                        //println("Colour $colour was $value")
                         throw Exception()
                     }
                     Pair(colour, value)
                 }
             }
 
-    private fun evaluateHand2(gots: List<List<Pair<String, Int>>>): Int {
-        val green = extract(gots, "green")
-        val red = extract(gots, "red")
-        val blue = extract(gots, "blue")
-        return green * red * blue
-    }
+    private fun evalKubeSquared(pairs: List<Pair<String, Int>>): Int =
+        extract(pairs, "green") * extract(pairs, "red") * extract(pairs, "blue")
 
-    private fun extract(resultSet: List<List<Pair<String, Int>>>, colour: String): Int =
-        resultSet.flatMap { it }.filter { it.first == colour }.map { it.second }.max()
+    private fun extract(resultSet: List<Pair<String, Int>>, colour: String): Int =
+        resultSet.filter { it.first == colour }.map { it.second }.max()
 }
 
 fun main() {
@@ -48,8 +43,13 @@ fun main() {
     val maxNrOfCubes = mapOf("red" to 12, "green" to 13, "blue" to 14)
     val v1 = Day2(lines, maxNrOfCubes).puzzle1()
     val v2 = Day2(lines, maxNrOfCubes).puzzle2()
-    println("Puzzle 1: $v1")
-    println("Puzzle 2: $v2")
-    assert(2683 == v1)
-    assert(49710 == v2)
+    if(2683 == v1) {
+        println("Puzzle 1: $v1")
+    } else {
+        println("Pussle 1 failed!")
+    }
+    if(49710 == v2)
+        println("Puzzle 2: $v2")
+    else
+        println("Puzzle 2 failed!")
 }
