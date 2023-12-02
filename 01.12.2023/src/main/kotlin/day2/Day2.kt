@@ -4,38 +4,48 @@ import java.net.URI
 import java.nio.file.Path
 import kotlin.io.path.readLines
 
-class Day2 {
+class Day2(val games:List<String>) {
+    val lookup = mapOf("red" to 12, "green" to 13, "blue" to 14)
 
-    fun v1() {
+    fun v1( ):Int {
+        var tally = 0
+        games.map {
+            try {
+                //Game2
 
+                //Game 1
+                parseGame(it, true, lookup) //Fetch colour
+                tally += it.split(":")[0].split(" ")[1].toInt()
+                println("Game success: $it")
+
+            } catch (e:Exception) {
+                println("Game $it failed: ${e.message}")
+            }
+
+        }
+        return tally
+
+    }
+    fun v2():Int {
+        var tally2 = 0
+        games.map {
+            tally2 += evaluateHand2(parseGame(it, false, lookup))
+        }
+
+        return tally2
     }
 
 }
 
 fun main() {
     val uriz: URI = ClassLoader.getSystemResource("day2.txt").toURI()
-    var tally = 0
-    var tally2 = 0
-    val lookup = mapOf("red" to 12, "green" to 13, "blue" to 14)
-    val result = Path.of(uriz).readLines().map {
-        try {
-            //Game2
-            tally2 += evaluateHand2(parseGame(it, false, lookup))
-
-            //Game 1
-            parseGame(it, true, lookup) //Fetch colour
-            tally += it.split(":")[0].split(" ")[1].toInt()
-            println("Game success: $it")
-
-        } catch (e:Exception) {
-            println("Game $it failed: ${e.message}")
-        }
-
-    }
-    println("final tally: $tally")
-    println("final tally2: $tally2")
-    assert(2683 == tally)
-    assert(49710 == tally2)
+    val lines = Path.of(uriz).readLines()
+    val v1 = Day2(lines).v1()
+    val v2 = Day2(lines).v2()
+    println("final tally: $v1")
+    println("final tally2: $v2")
+    assert(2683 == v1)
+    assert(49710 == v2)
 }
 
 private fun parseGame(game: String, exitOnErrors:Boolean, lookup:Map<String, Int>): List<List<Pair<String, Int>>> {
