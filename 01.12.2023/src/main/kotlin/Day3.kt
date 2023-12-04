@@ -1,4 +1,4 @@
-class Day3(val symbolRegex:Regex) {
+class Day3(val symbolRegex:Regex, val secondAssignment:Boolean) {
 
 
 
@@ -30,10 +30,20 @@ class Day3(val symbolRegex:Regex) {
         )
 
 
-        fun scanLines(symbol: List<Pair<String, IntRange>>, numbers: List<List<Pair<String, IntRange>>>): List<Pair<String, IntRange>> =
-            symbol.map { loff ->
-                numbers.map { line -> findInRange(loff.second, line) }
-            }.flatMap { it }.flatMap { it }
+    fun scanLines(symbol: List<Pair<String, IntRange>>, numbers: List<List<Pair<String, IntRange>>>): List<Pair<String, IntRange>> =
+        symbol.map { symbol ->
+            val found = numbers.flatMap { line -> findInRange(symbol.second, line) }
+            if (!secondAssignment)
+                found
+            else {
+                if (found.size == 2) {
+                    val newNumber = (found.get(0).first.toInt() * found.get(1).first.toInt()).toString()
+                    listOf(Pair(newNumber, symbol.second))
+                } else {
+                    emptyList()
+                }
+            }
+        }.flatMap { it }
 
 
         fun findInRange(symbol: IntRange, lowerRanges: List<Pair<String, IntRange>>): List<Pair<String, IntRange>> =
@@ -47,8 +57,5 @@ class Day3(val symbolRegex:Regex) {
         regex.findAll(input).map { matchResult ->
             Pair(matchResult.groups[0]!!.value, matchResult.groups[0]!!.range)
         }.toList()
-
-
-
     }
 

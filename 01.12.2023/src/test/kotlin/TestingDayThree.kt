@@ -12,7 +12,7 @@ class TestingDayThree {
 
     @Test
     fun testParsingLine() {
-        val day3 = Day3("""[*=/%@+&\-$#]""".toRegex())
+        val day3 = Day3("""[*=/%@+&\-$#]""".toRegex(), false)
         assertEquals(10, day3.extractContent("""\d+""".toRegex(), line1).size)
         assertEquals(8, day3.extractContent("""[*=/%@+&\-$]""".toRegex(), line2).size)
 
@@ -22,7 +22,7 @@ class TestingDayThree {
 
     @Test
     fun testThreeLines() {
-    val day3 = Day3("""[*=/%@+&\-$#]""".toRegex())
+    val day3 = Day3("""[*=/%@+&\-$#]""".toRegex(), false)
         val lines = listOf(line1, line2, line3)
         val rezzie = day3.extractNumbers(lines)
         println(rezzie)
@@ -38,7 +38,7 @@ class TestingDayThree {
         val lines = Path.of(filz!!.toURI()).readLines()
 
         //Start from second line and avoid the last one
-        val day3 = Day3("""[*=/%@+&\-$#]""".toRegex())
+        val day3 = Day3("""[*=/%@+&\-$#]""".toRegex(), false)
         println(day3.extractNumbers(lines).sum())
         assertEquals(557705, day3.extractNumbers(lines).sum())
 
@@ -51,20 +51,16 @@ class TestingDayThree {
             "....*84....*......................#..471.696.736.107....974...-614............................../...%930..........................+......364",
             "............800...-155..235......446...................*....................286.......822../...199............670-....................%....."
         )
-        val day3 = Day3("""[*=/%@+&\-$#]""".toRegex())
+        val day3 = Day3("""[*=/%@+&\-$#]""".toRegex(), false)
         assertEquals(9, day3.extractNumbers(lines).size)
     }
-    
     @Test
-    fun findGears() {
-        val lines = listOf(
-            ".444.....560.297...149..............*....*......*...................173...................365............986.$............271...182...26....",
-            "....*84....*......................#..471.696.736.107....974...-614............................../...%930..........................+......364",
-            "............800...-155..235......446...................*....................286.......822../...199............670-....................%....."
-        )
-        val day3 = Day3("""[*]""".toRegex())
-        assertEquals(4, day3.extractNumbers(lines).size)
+    fun testEntireFileSecondAssignment() {
+        val filz = TestingDayThree::class.java.getResource("day3.txt")
+        val lines = Path.of(filz!!.toURI()).readLines()
+        val day3Two = Day3("""[*]""".toRegex(), true).extractNumbers(lines).sum()
+        println("Day3 vs 2 $day3Two")
+        assertEquals(84266818, day3Two)
+
     }
-
-
-}// 537846 is too low
+}
