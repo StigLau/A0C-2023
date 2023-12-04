@@ -13,11 +13,11 @@ class TestingDayThree {
     @Test
     fun testParsingLine() {
         val day3 = Day3("""[*=/%@+&\-$#]""".toRegex())
-        assertEquals(10, day3.foCruftyStuff("""\d+""".toRegex(), line1).size)
-        assertEquals(8, day3.foCruftyStuff("""[*=/%@+&\-$]""".toRegex(), line2).size)
+        assertEquals(10, day3.extractContent("""\d+""".toRegex(), line1).size)
+        assertEquals(8, day3.extractContent("""[*=/%@+&\-$]""".toRegex(), line2).size)
 
-        assertEquals(9, day3.foCruftyStuff("""\d+""".toRegex(), line3).size)
-        assertEquals(4, day3.foCruftyStuff("""[*=/%@+&\-$]""".toRegex(), line3).size)
+        assertEquals(9, day3.extractContent("""\d+""".toRegex(), line3).size)
+        assertEquals(4, day3.extractContent("""[*=/%@+&\-$]""".toRegex(), line3).size)
     }
 
     @Test

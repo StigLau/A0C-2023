@@ -15,7 +15,7 @@ class Day3(val symbolRegex:Regex) {
         fun extractNumbers(lines: List<String>) = IntRange(1, lines.size - 2)
             .map {
                 scanLines(
-                    foCruftyStuff(symbolRegex, lines.get(it)),
+                    extractContent(symbolRegex, lines.get(it)),
                     parseLines(lines, it)
                 )
                     .map { it.first.toInt() }
@@ -24,9 +24,9 @@ class Day3(val symbolRegex:Regex) {
 
     fun parseLines(lines: List<String>, i: Int): List<List<Pair<String, IntRange>>> =
         listOf(
-            asPairs(foCruftyStuff(digitRegex, lines.get(i - 1))),
-            asPairs(foCruftyStuff(digitRegex, lines.get(i))),
-            asPairs(foCruftyStuff(digitRegex, lines.get(i + 1)))
+            asPairs(extractContent(digitRegex, lines.get(i - 1))),
+            asPairs(extractContent(digitRegex, lines.get(i))),
+            asPairs(extractContent(digitRegex, lines.get(i + 1)))
         )
 
 
@@ -47,7 +47,7 @@ class Day3(val symbolRegex:Regex) {
         }
 
 
-        fun foCruftyStuff(regex: Regex, input: String): List<Pair<String, IntRange>> {
+        fun extractContent(regex: Regex, input: String): List<Pair<String, IntRange>> {
             val rez = mutableListOf<Pair<String, IntRange>>()
             regex.findAll(input).forEach { matchResult ->
                 rez.add(Pair(matchResult.groups[0]!!.value, matchResult.groups[0]!!.range))
