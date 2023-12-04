@@ -1,9 +1,16 @@
-class Day3 {
+class Day3(val symbolRegex:Regex) {
 
-    companion object {
+
 
         val digitRegex = """\d+""".toRegex()
-        val symbolRegex = """[*=/%@+&\-$#]""".toRegex()
+
+    companion object {
+        fun asPairs(lineFinds: List<Pair<String, IntRange>>): List<Pair<String, IntRange>> =
+            lineFinds.map { pair ->
+                Pair(pair.first, IntRange(pair.second.first - 1, pair.second.last + 1))
+            }
+
+    }
 
         fun extractNumbers(lines: List<String>) = IntRange(1, lines.size - 2)
             .map {
@@ -28,10 +35,6 @@ class Day3 {
         }
 
 
-        fun asPairs(lineFinds: List<Pair<String, IntRange>>): List<Pair<String, IntRange>> =
-            lineFinds.map { pair ->
-                Pair(pair.first, IntRange(pair.second.first - 1, pair.second.last + 1))
-            }
 
         fun findInRange(symbol: IntRange, lowerRanges: List<Pair<String, IntRange>>): MutableList<Pair<String, IntRange>> {
             val tempList = mutableListOf<Pair<String, IntRange>>()
@@ -52,5 +55,4 @@ class Day3 {
             return rez
         }
     }
-}
 
