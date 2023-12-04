@@ -14,26 +14,26 @@ class Day3(val symbolRegex:Regex) {
 
         fun extractNumbers(lines: List<String>) = IntRange(1, lines.size - 2)
             .map {
-                scanLines(lines, it)
+                scanLines(
+                    foCruftyStuff(symbolRegex, lines.get(it)),
+                    parseLines(lines, it)
+                )
                     .map { it.first.toInt() }
             }
             .flatMap { it }
 
-        fun scanLines(lines: List<String>, i: Int): MutableSet<Pair<String, IntRange>> {
-            val foundSymbolsIneMiddle = foCruftyStuff(symbolRegex, lines.get(i))
-            val upperRanges = asPairs(foCruftyStuff(digitRegex, lines.get(i - 1)))
-            val sameLineRanges = asPairs(foCruftyStuff(digitRegex, lines.get(i)))
-            val lowerRanges = asPairs(foCruftyStuff(digitRegex, lines.get(i + 1)))
+    fun parseLines(lines: List<String>, i: Int): List<List<Pair<String, IntRange>>> =
+        listOf(
+            asPairs(foCruftyStuff(digitRegex, lines.get(i - 1))),
+            asPairs(foCruftyStuff(digitRegex, lines.get(i))),
+            asPairs(foCruftyStuff(digitRegex, lines.get(i + 1)))
+        )
 
-            val rezzie = mutableSetOf<Pair<String, IntRange>>()
-            foundSymbolsIneMiddle.forEach {
-                rezzie.addAll(findInRange(it.second, lowerRanges))
-                rezzie.addAll(findInRange(it.second, sameLineRanges))
-                rezzie.addAll(findInRange(it.second, upperRanges))
-            }
-            return rezzie
-        }
 
+        fun scanLines(symbol: List<Pair<String, IntRange>>, numbers: List<List<Pair<String, IntRange>>>): List<Pair<String, IntRange>> =
+            symbol.map { loff ->
+                numbers.map { line -> findInRange(loff.second, line) }
+            }.flatMap { it }.flatMap { it }
 
 
         fun findInRange(symbol: IntRange, lowerRanges: List<Pair<String, IntRange>>): MutableList<Pair<String, IntRange>> {
