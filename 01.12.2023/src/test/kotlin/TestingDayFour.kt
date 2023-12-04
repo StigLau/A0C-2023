@@ -9,24 +9,22 @@ class TestingDayFour {
         val filz = TestingDayThree::class.java.getResource("day4.txt")
         val lines = Path.of(filz!!.toURI()).readLines()
         val games = lines.map { line ->
-            val ost = Scratchcard.parse(line).worth()
-            ost
+            parse(line).map { translate(it.toInt()) }
         }.toList()
         println(games)
-        println(games.sum())
+        println(games.flatMap { it }.sum())
 
     }
 
+    @Test
+    fun mapWinners() {
+        val filz = TestingDayThree::class.java.getResource("day4.txt")
+        val lines = Path.of(filz!!.toURI()).readLines()
+
+    }
 }
 
-class Scratchcard(val numbers: List<String>, val winners: List<String>) {
 
-    fun worth():Int{
-        val won = winners.filter {winner->
-            numbers.contains(winner)
-        }.count()
-        return translate(won)
-    }
 
     fun translate(winnings: Int): Int =
         when (winnings) {
@@ -45,13 +43,15 @@ class Scratchcard(val numbers: List<String>, val winners: List<String>) {
             else -> -1
         }
 
-    companion object {
-        fun parse(line: String):Scratchcard {
+        fun parse(line: String): List<String> {
             val splut = line.split("|")
             val winners = splut[0].split(":")[1].trim().split(" ")
             val numbers = splut[1].trim().replace("  ", " ").split(" ")
-            return Scratchcard(numbers, winners)
+            return worth(numbers, winners)
         }
-    }
 
-}
+        fun worth(numbers: List<String>, winners: List<String>): List<String> =
+            winners.filter {winner->
+                numbers.contains(winner)
+            }
+
