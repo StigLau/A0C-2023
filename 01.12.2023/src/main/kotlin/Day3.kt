@@ -36,23 +36,19 @@ class Day3(val symbolRegex:Regex) {
             }.flatMap { it }.flatMap { it }
 
 
-        fun findInRange(symbol: IntRange, lowerRanges: List<Pair<String, IntRange>>): MutableList<Pair<String, IntRange>> {
-            val tempList = mutableListOf<Pair<String, IntRange>>()
+        fun findInRange(symbol: IntRange, lowerRanges: List<Pair<String, IntRange>>): List<Pair<String, IntRange>> =
             lowerRanges.filter { lows ->
                 lows.second.contains(symbol.endInclusive)
-            }.forEach {
-                tempList.add(it)
-            }
-            return tempList
-        }
+            }.toList()
 
 
-        fun extractContent(regex: Regex, input: String): List<Pair<String, IntRange>> {
-            val rez = mutableListOf<Pair<String, IntRange>>()
-            regex.findAll(input).forEach { matchResult ->
-                rez.add(Pair(matchResult.groups[0]!!.value, matchResult.groups[0]!!.range))
-            }
-            return rez
-        }
+
+    fun extractContent(regex: Regex, input: String): List<Pair<String, IntRange>> =
+        regex.findAll(input).map { matchResult ->
+            Pair(matchResult.groups[0]!!.value, matchResult.groups[0]!!.range)
+        }.toList()
+
+
+
     }
 
