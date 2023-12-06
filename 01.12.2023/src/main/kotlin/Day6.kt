@@ -8,8 +8,8 @@ class Day6 {
     //holding down the button, the boat's speed increases by one millimeter per millisecond
 //Which alternatives (times each other) wins?
     companion object {
-        fun calculateBoatDistance(time: Int, timeToBeat: Int): List<Pair<Int, Int>> =
-            IntRange(1, time).map { a ->
+        fun calculateBoatDistance(time: Long, timeToBeat: Long): List<Pair<Long, Long>> =
+            LongRange(1, time).map { a ->
                 Pair(a, a * (time - a))
             }.filter { pear ->
                 pear.second > timeToBeat
