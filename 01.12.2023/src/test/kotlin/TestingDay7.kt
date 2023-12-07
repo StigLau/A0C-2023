@@ -1,6 +1,5 @@
+import Utils.Companion.readFile
 import org.junit.jupiter.api.Test
-import java.nio.file.Path
-import kotlin.io.path.readLines
 import kotlin.test.assertEquals
 
 class TestingDay7 {
@@ -61,9 +60,7 @@ QQQJA 483"""
 
     @Test
     fun dealWithProd() {
-        val filz = TestingDay7::class.java.getResource("day7.txt")
-        val lines = Path.of(filz!!.toURI()).readLines()
-        val unsortedHands = day7.parseInput(lines)
+        val unsortedHands = day7.parseInput(readFile("day7.txt"))
         val hands: List<Hand> = unsortedHands.sortedBy { it.gotStrength }
         assertEquals(1000, unsortedHands.size)
         assertEquals(460, unsortedHands.first().bid)
@@ -84,6 +81,13 @@ QQQJA 483"""
 
         //247411359 was too high!
     }
+
+    @Test
+    fun dealWithTheLesserValueCardsALSO() {
+        val unsortedHands = day7.parseInput(readFile("day7.txt"))
+        val hands: List<Hand> = unsortedHands.sortedBy { it.gotStrength }
+    }
+
 
 
     ///////!!!!!!!TODO Husk på å finne ut av hvilken som har de høyeste verdiene basert på neste kort!
