@@ -1,5 +1,10 @@
 class Day7 {
+    /*
     fun parseInput(testdata: String): List<Hand> = testdata.lines().map {
+        val line = it.split(" ")
+        Hand(convertToHand(line[0]), line[1].toInt())
+    }*/
+    fun parseInput(lines:List<String>): List<Hand> = lines.map {
         val line = it.split(" ")
         Hand(convertToHand(line[0]), line[1].toInt())
     }

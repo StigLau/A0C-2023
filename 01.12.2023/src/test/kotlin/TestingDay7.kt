@@ -1,4 +1,6 @@
 import org.junit.jupiter.api.Test
+import java.nio.file.Path
+import kotlin.io.path.readLines
 import kotlin.test.assertEquals
 
 class TestingDay7 {
@@ -8,30 +10,6 @@ T55J5 684
 KK677 28
 KTJJT 220
 QQQJA 483"""
-
-    //Sorting A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2
-    //Five of a kind
-    //Four of a kind
-    //Full house
-    //Three of a kind
-    //Two pair
-    //One pair
-    //High card
-
-    //Dealing with ties
-    //Start by comparing the first card in each hand
-    //If these cards are different, the hand with the stronger first card is considered stronger. If the first card in each hand have the same label, however, then move on to considering the second card in each hand etc
-
-    //each hand is followed by its bid amount.
-    //Each hand wins an amount equal to its bid multiplied by its rank, where the weakest hand gets rank 1, the second-weakest hand gets rank 2, and so on up to the strongest hand. Because there are five hands in this example, the strongest hand will have rank 5 and its bid will be multiplied by 5.
-
-    /*Test Data
-    32T3K 765
-T55J5 684
-KK677 28
-KTJJT 220
-QQQJA 483
-     */
 
     val day7 = Day7()
     @Test
@@ -44,7 +22,7 @@ QQQJA 483
 
     @Test
     fun testInputParsing() {
-        val hands: List<Hand> = day7.parseInput(testdata)
+        val hands: List<Hand> = day7.parseInput(testdata.lines())
         assertEquals(5, hands.size)
         assertEquals(765, hands.get(0).bid)
         assertEquals(483, hands.get(4).bid)
@@ -52,7 +30,7 @@ QQQJA 483
 
     @Test
     fun testEvaluatingHand() {
-        val hands: List<Hand> = day7.parseInput(testdata)
+        val hands: List<Hand> = day7.parseInput(testdata.lines())
         assertEquals(10003, hands.get(0).strength())
         assertEquals(30005, hands.get(1).strength())
         assertEquals(21307, hands.get(2).strength())
@@ -62,7 +40,7 @@ QQQJA 483
 
     @Test
     fun battleHands() {
-        val hands: List<Hand> = day7.parseInput(testdata).sortedBy { it.gotStrength }
+        val hands: List<Hand> = day7.parseInput(testdata.lines()).sortedBy { it.gotStrength }
         assertEquals(30012, hands.get(4).gotStrength)
         assertEquals(30005, hands.get(3).gotStrength)
         assertEquals(21307, hands.get(2).gotStrength)
@@ -72,7 +50,7 @@ QQQJA 483
 
     @Test
     fun handAndBid() {
-        val hands: List<Hand> = day7.parseInput(testdata).sortedBy { it.gotStrength }
+        val hands: List<Hand> = day7.parseInput(testdata.lines()).sortedBy { it.gotStrength }
         assertEquals(483, hands.last().bid)
         assertEquals(765, hands.first().bid)
         val rankedHandsAndBids = hands.mapIndexed { index, hand ->
@@ -83,8 +61,32 @@ QQQJA 483
 
     @Test
     fun dealWithProd() {
+        val filz = TestingDay7::class.java.getResource("day7.txt")
+        val lines = Path.of(filz!!.toURI()).readLines()
+        val unsortedHands = day7.parseInput(lines)
+        val hands: List<Hand> = unsortedHands.sortedBy { it.gotStrength }
+        assertEquals(1000, unsortedHands.size)
+        assertEquals(460, unsortedHands.first().bid)
+        assertEquals(40910, unsortedHands.first().strength())
+        assertEquals(677, unsortedHands.last().bid)
+        assertEquals(50012, unsortedHands.last().strength())
+        assertEquals(396, hands.last().bid)
+        assertEquals(60011, hands.last().gotStrength)
+        assertEquals(1, hands.get(1).bid)
+        assertEquals(8, hands.get(1).gotStrength)
+        assertEquals(556, hands.first().bid)
+        assertEquals(7, hands.first().gotStrength)
 
+        val rankedHandsAndBids = hands.mapIndexed { index, hand ->
+            (index + 1) * hand.bid
+        }
+        assertEquals(247411359, rankedHandsAndBids.sum())
+
+        //247411359 was too high!
     }
+
+
+    ///////!!!!!!!TODO Husk på å finne ut av hvilken som har de høyeste verdiene basert på neste kort!
 
 
 
