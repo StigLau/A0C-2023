@@ -32,9 +32,9 @@ class Day7 {
 
 data class Hand(val cards: List<Int>, val bid: Int) {
 
-    val gotStrength = this.strength()
+    val gotStrength:Long = this.strength()
 
-    fun strength(): Int {
+    fun strength(): Long {
         val grouped = cards.groupBy { it }
         val groupCunts = grouped.map { it.key to  it.value.size }
 
@@ -42,22 +42,22 @@ data class Hand(val cards: List<Int>, val bid: Int) {
         val four = howManyInAGroup(groupCunts, 4)
         val three = howManyInAGroup(groupCunts, 3)
         val pairs = howManyInAGroup(groupCunts, 2).sortedDescending()
+        val alone = howManyInAGroup(groupCunts, 1).sortedDescending()
 
         return if(fiveOfAKind.isNotEmpty()) { //Five of a kind
-            60000 + fiveOfAKind.first()
+            70000000000L + fiveOfAKind.first()
         } else if(four.isNotEmpty()) {//Four of a kind
-            50000 + four.first()
+            60000000000L + (four.first() * 100) + alone.first()
         } else if(three.isNotEmpty() && pairs.isNotEmpty()) { //Full house
-            40000 + (three.first() * 100) + pairs.first()
+            50000000000L + (three.first() * 100) + pairs.first()
         } else if(three.isNotEmpty()) { //Three of a kind
-            30000 + three.first()
+            40000000000L + (three.first() * 10000) + (alone.get(0) * 100) + alone.get(1)
         } else if(pairs.size == 2) { //Two pair
-            20000+ (pairs.first() * 100) + pairs.last()
+            30000000000L + (pairs.first() * 10000) + (pairs.last()*100) + alone.first()
         } else if(pairs.size == 1) { //One pair
-            10000+pairs.first()
+            20000000000L+(pairs.first()*1000000) + (alone.get(0)*10000) + (alone.get(1)*100) + alone.get(2)
         } else //Highest
-            cards.first()
-
+            10000000000L + (cards.get(0) * 100000000L) + (cards.get(1) * 1000000) + (cards.get(2) * 10000) + (cards.get(3) * 100) + cards.get(4)
     }
 
     private fun howManyInAGroup(groupCunts: List<Pair<Int, Int>>, howMany: Int): List<Int> {
