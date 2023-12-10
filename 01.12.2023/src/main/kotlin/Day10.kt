@@ -1,5 +1,3 @@
-import com.sun.org.apache.xpath.internal.operations.Bool
-
 class Day10
 
 class MyDungeon(val layout: List<String>) {
@@ -12,26 +10,28 @@ class MyDungeon(val layout: List<String>) {
 
     fun startingPosition() : List<Pos> = dungeonMap.flatMap { it }.filter { it.symbol == 'S'  }
 
-
-
-    fun surroundings(here:Pos):List<Pos> =
-        dungeonMap
-            .flatMap { it }
-            .filter {
-                here.candidate(it)
-            }
+    fun getTile(x:Int, y:Int):Pos {
+        val gots = dungeonMap.flatMap { it }.filter { it.x == x && it.y == y }
+        if(gots.size > 1) {
+            println("OMFG, We shpuld onlyu getz 1")
+        }
+        return gots.first()
+    }
 
     fun walkToTheBitterEnd(): MutableList<Pos> {
         val startPos = startingPosition().first()
-        var nextStep = surroundings(startPos).first()
+        var nextStep = startPos.directionSurroundingCandidates(this).first()
         val walkTheWalk = mutableListOf(startPos)
 
         while(nextStep != startPos) {
+            val found  = nextStep.directionSurroundingCandidates(this)
+                .filter { it != walkTheWalk.last() } //Avoid tracing backwards
             walkTheWalk.add(nextStep)
-            val found  = surroundings(nextStep)
-            nextStep = found.first()
-            if(found.size != 1)
-                println("OMFG")
+            if(found.size == 0) {
+                nextStep = startPos
+            } else {
+                nextStep = found.first()
+            }
 
         }
         return walkTheWalk
@@ -41,27 +41,42 @@ class MyDungeon(val layout: List<String>) {
 
 
 data class Pos(val x:Int, val y:Int, val symbol:Char) {
-    fun candidate(other:Pos):Boolean {
-        //TODO Remember to take into account who YOU are!
-        //isAbove
-        return if(this == other)
-            false
-        else if(this.x == other.x && other.y -1 == this.y && //isAbove
-            (other.symbol == 'F' || other.symbol == '|' || other.symbol == '7'))
-            true
-        //Or Below
-        else if(this.x == other.x && other.y +1 == this.y &&
-            (other.symbol == 'L' || other.symbol == '|' || other.symbol == 'J'))
-            true
-        //Or to the left
-        else if(this.x == other.x+1 && other.y == this.y &&
-            (other.symbol == 'L' || other.symbol == '-' || other.symbol == 'F'))
-            true
-        else if(this.x == other.x-1 && other.y == this.y &&
-            (other.symbol == '7' || other.symbol == '-' || other.symbol == 'J'))
-            true
-        else
-            false
-
+    fun directionSurroundingCandidates(dung:MyDungeon):List<Pos> {
+        val lizzie:MutableList<Pos> = mutableListOf()
+        val right = dung.getTile(this.x+1, this.y)
+        if(this.isToTheRight(right)) {
+            lizzie.add(right)
+        }
+        val below = dung.getTile(this.x, this.y+1)
+        if(this.below(below)) {
+            lizzie.add(below)
+        }
+        val left = dung.getTile(this.x-1, this.y)
+        if(this.isToTheLeft(left)) {
+            lizzie.add(left)
+        }
+        val above = dung.getTile(this.x, this.y-1)
+        if (this.above(above)) {
+            lizzie.add(above)
+        }
+        return lizzie
     }
+
+
+    fun below(other: Pos): Boolean =
+        this.x == other.x && other.y - 1 == this.y && //isAbove
+                (other.symbol == 'L' || other.symbol == '|' || other.symbol == 'J')
+
+    fun above(other:Pos) =
+        this.x == other.x && other.y +1 == this.y &&
+                (other.symbol == 'F' || other.symbol == '|' || other.symbol == '7')
+
+    fun isToTheLeft(other:Pos) =
+        this.x == other.x+1 && other.y == this.y &&
+            (other.symbol == 'L' || other.symbol == '-' || other.symbol == 'F')
+
+    fun isToTheRight(other:Pos) =
+        this.x == other.x-1 && other.y == this.y &&
+            (other.symbol == '7' || other.symbol == '-' || other.symbol == 'J')
+
 }
